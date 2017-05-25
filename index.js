@@ -303,10 +303,11 @@ module.exports = function(mongoose) {
    * @func sendVerificationEmail
    * @param {string} email - the user's email address.
    * @param {string} url - the unique url generated for the user.
+   * @param {object} extraOptions - Extra substitution options to inject in template
    * @param {function} callback - the callback to pass to Nodemailer's transporter
    */
-  var sendVerificationEmail = function(email, url, callback) {
-    var r = /\$\{URL\}/g;
+  var sendVerificationEmail = function(email, url, extraSubs, callback) {
+    var r = /\${URL}/g;
 
     // inject newly-created URL into the email's body and FIRE
     // stringify --> parse is used to deep copy
@@ -316,6 +317,15 @@ module.exports = function(mongoose) {
     mailOptions.to = email;
     mailOptions.html = mailOptions.html.replace(r, URL);
     mailOptions.text = mailOptions.text.replace(r, URL);
+
+    Object.keys(extraOptions).forEach(function (optionKey) {
+      // var re = new RegExp("${" + optionKey + "}", "g");
+      var re = new RegExp('\\$\\{'+optionKey+'\\}', 'gi');
+
+      console.log(re);
+      mailOptions.html = mailOptions.html.replace(re, extraOptions[optionKey]);
+      mailOptions.text = mailOptions.text.replace(re, extraOptions[optionKey]);
+    });
 
     if (!callback) {
       callback = options.verifySendMailCallback;
