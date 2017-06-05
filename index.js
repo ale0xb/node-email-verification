@@ -318,13 +318,13 @@ module.exports = function(mongoose) {
     mailOptions.html = mailOptions.html.replace(r, URL);
     mailOptions.text = mailOptions.text.replace(r, URL);
 
-    Object.keys(extraOptions).forEach(function (optionKey) {
+    Object.keys(extraSubs).forEach(function (optionKey) {
       // var re = new RegExp("${" + optionKey + "}", "g");
       var re = new RegExp('\\$\\{'+optionKey+'\\}', 'gi');
 
       console.log(re);
-      mailOptions.html = mailOptions.html.replace(re, extraOptions[optionKey]);
-      mailOptions.text = mailOptions.text.replace(re, extraOptions[optionKey]);
+      mailOptions.html = mailOptions.html.replace(re, extraSubs[optionKey]);
+      mailOptions.text = mailOptions.text.replace(re, extraSubs[optionKey]);
     });
 
     if (!callback) {
